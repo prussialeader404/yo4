@@ -1,0 +1,38 @@
+## Açıklama
+YO4 türkçe ve tamamen anonim olan bir sanal konuşma ağıdır.
+YO4 olarak başlıca dikkat ettiğimiz şeyler kullanıcıların güvenliği ve anonimliğidir, bu anonimlik geliştirici kiarpies ekibi dahil kullanıcı durumu gözetmeksizin anonimliği sağlar, giriş sırasında ve kullacının uygulamayı kullanırken yaptığı bütün eylemleri korur.
+## Profiller Hakkındaki Diğer Bilgiler
+2 türlü profil oluşturma şekli vardır
+## 1. Profil
+Normal Anonim üyedir. İsmi kayıt yaptırdığı sıraya göre anonim0001'den başlayıp anonim9999'a kadar gider, anonim9999'dan sonra isim anonim0001a olarak gider
+## 2. Profil
+Kullan-at (Soanony) üyedir. bu üyeliğe giriş yapmak için kayıt sisteminde sağ üst köşede bulunan [~] şeklindeki butona basıp Soanony üye olabilir soanony üyelikte isim ve numara görünmez isim kısmında ise sadece "Soanony" yazar bu profiller 1. Profillerin aksine takip edilemez, takip edemez ve sadece 20 tane gönderi paylaşabilir. Aynı zamanda Hakkında kısmında sadece "Null" yazıp profil kısmına giriş yaptığımızda denildiği gibi takip etme butonu yer almaz sadece mesaj gönderilebilir.
+Not: Kullan-at (Soanony) üyesi olmak tamamen ücretsizdir
+## Özellikler
+1. Tamamen anonim kayıt sistemi
+2. Veri vermeyen fotoğraf, link ve yazı paylaşımı
+3. Anonim bir şekilde mesaj gönderme (eğer Soanony üyeliğini aktif ederseniz profilinizde görünmez)
+4. Sadece isim ve şifreden oluşan kayıt sistemi
+5. Aynı şekilde giriş tabanı
+6. Takipsiz dosya paylaşımı
+## Kurulum / Kayıt
+1. Platformu güvenli bir şekile indirip bilgisayarınıza kurunuz.
+2. Kayıt bölümünde sadece şifre yazınız.
+3. Alttaki "onayla" yazan butona tıklayınız.
+## Kurulum / Giriş
+1. Giriş kısmına şifrenizi yazınız.
+2. Alttaki "onayla" yazan butona tıklayınız.
+## Hesap Silme 
+1. Arayüzün sağ üstünde bulunan çark sembolüne tıklayıp en alttaki "Hesabı sil" yazısına tıklayınız.
+2. Eğer onaylıyorsanız "Ok" yazısına eğer onaylamıyorsanız "iptal" yazısına tıklanıyınız.
+## Serverlar
+İki tane server bulunur bu Serverlar "Server1 ve Server2"dir
+## Kurulum / Server
+1. Üstteki içinde bulunduğunuz Servera tıklayın
+2. Serverin Altındaki diğer Servera tıklayın
+3. Dilerseniz Serverları değişirken isminizide değiştirebilirsiniz
+## Kurulum / Server Değişirken İsim Değiştirme
+1. Server değişirken İsim değişmek için Server1'den Server2'ye geçerken (veya tam tersi) sağ alttaki "İsim değiş" butonuna bas
+2. İsim değişimi günde sadece 5 defa uygulanabilir
+## Yapımcı
+prussialeader ve kiarpies ekibi bana burda yazanlara uygun ve burda yazanlardan hiç şaşmyacak github html kodu yaz

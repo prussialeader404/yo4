@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>YO4 - Anonim Sanal Konuşma Ağı</title>
+<style>
+  body {
+    background-color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  /* Ayarlar butonu */
+  #settingsBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  /* Ayarlar menüsü */
+  #settingsMenu {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: none;
+    flex-direction: column;
+    width: 200px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+  #settingsMenu button {
+    padding: 10px;
+    border: none;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    width: 100%;
+  }
+  #settingsMenu button:hover {
+    background-color: #eee;
+  }
+
+  /* Diğer stiller */
+  h2 {
+    margin: 20px;
+  }
+  #register, #login {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    display: inline-block;
+  }
+  input {
+    padding: 8px;
+    margin: 5px;
+    width: 200px;
+  }
+  button {
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  #servers {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+  }
+  .server {
+    background-color: #f0f0f0;
+    padding: 10px;
+    width: 150px;
+    height: 200px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+  }
+  #content {
+    display: none;
+  }
+  #feed {
+    margin: 20px;
+  }
+  .post {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+  }
+  #profile {
+    display: none;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 20px;
+    border-radius: 8px;
+    background-color: #fafafa;
+  }
+  #profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #messages {
+    display: none;
+    margin-top: 10px;
+  }
+  #soanonyButton {
+    position: absolute;
+    top: 20px;
+    right: 60px;
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  /* Server değiştirme onay kutusu ve butonu */
+  #serverChangeContainer {
+    margin: 20px;
+  }
+  #serverChangeContainer input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+</style>
+</head>
+<body>
+
+<!-- Ayarlar butonu -->
+<button id="settingsBtn" onclick="toggleSettings()">⚙️</button>
+<div id="settingsMenu">
+  <button onclick="deleteAccount()">Hesabı Sil</button>
+  <button onclick="changeServer()">Server Değiştir</button>
+  <button style="background-color:#3498db; color:white;" onclick="becomeSoanony()">Soanony Üyesi Ol</button>
+</div>
+
+<h2>Kayıt Ol</h2>
+<div id="register">
+  <button onclick="register()">Kayıt Ol (Rastgele İsim)</button>
+</div>
+
+<h2>Giriş Yap</h2>
+<div id="login">
+  <button onclick="login()">Giriş Yap (Rastgele İsim)</button>
+</div>
+
+<div id="content">
+  <!-- Serverlar -->
+  <div id="servers">
+    <div class="server" onclick="switchServer('Server1')">Server1</div>
+    <div class="server" onclick="switchServer('Server2')">Server2</div>
+  </div>
+
+  <!-- Server değiştirirken isim değişimi zorunlu değil, onay kutusu ve buton -->
+  <div id="serverChangeContainer">
+    <input type="checkbox" id="nameChangeCheck" />
+    <label for="nameChangeCheck">İsim değiştirilsin mi?</label>
+    <button onclick="confirmServerChange()">Onayla</button>
+  </div>
+
+  <!-- Paylaşımlar -->
+  <h3 style="margin-left:20px;">Paylaşımlar</h3>
+  <div style="margin-left:20px; margin-bottom:20px;">
+    <textarea id="newPostText" rows="3" cols="50" placeholder="Yazı veya fotoğraf linki..."></textarea><br/>
+    <button onclick="addPost()">Gönderi Paylaş</button>
+  </div>
+
+  <!-- Feed -->
+  <div id="feed"></div>
+
+  <!-- Profil -->
+  <div id="profile">
+    <div id="profile-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <h3>Profil: <span id="profileName"></span></h3>
+      <button onclick="closeProfile()">Kapat</button>
+    </div>
+    <p>Hakkında: <span id="profileBio"></span></p>
+    <textarea id="profileBioEdit" rows="3" cols="50" style="display:none;"></textarea>
+    <button id="editBioBtn" onclick="editBio()">Düzenle</button>
+    <button id="saveBioBtn" style="display:none;" onclick="saveBio()">Kaydet</button>
+    
+    <!-- Takip Et ve Çıkartma Butonları Buraya Eklendi -->
+    <div id="followButtons" style="margin-top: 10px;">
+      <button id="followBtn" onclick="followUser()">Takip Et</button>
+      <button id="unfollowBtn" onclick="unfollowUser()" style="display:none;">Takipten Çık</button>
+    </div>
+    
+    <p>Takipçiler: <span id="followersCount"></span></p>
+    <p>Takip Ettikleri: <span id="followingCount"></span></p>
+    <button onclick="showMessageBox()">Mesaj At</button>
+    <div id="messages"></div>
+  </div>
+</div>
+
+<script>
+  let users = [];
+  let currentUser = null;
+  let selectedProfile = null;
+  let currentServer = 'Server1';
+  let nameChangeCount = 0;
+  let soanonyMode = false;
+
+  // Rastgele isim üret
+  function generateRandomName() {
+    const randNum = Math.floor(Math.random() * 9999) + 1;
+    const randStr = String(randNum).padStart(4, '0');
+    return 'anonim' + randStr;
+  }
+
+  // Ayar menüsü toggle
+  function toggleSettings() {
+    const menu = document.getElementById('settingsMenu');
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+  }
+
+  // Soanony ol
+  function becomeSoanony() {
+    soanonyMode = true;
+    alert("Soanony üyeliğine geçtiniz! Artık isim ve şifre olmadan giriş yapabilirsiniz.");
+    document.getElementById('register').style.display = 'none';
+    document.getElementById('login').style.display = 'none';
+
+    const soanonyUser = {
+      name: 'Soanony',
+      password: '',
+      bio: "Null",
+      followers: [],
+      following: [],
+      posts: [],
+      messages: []
+    };
+    currentUser = soanonyUser;
+    if(!users.some(u => u.name === 'Soanony')){
+      users.push(soanonyUser);
+    }
+    document.getElementById('content').style.display = 'block';
+    loadFeed();
+    toggleSettings();
+  }
+
+  // Hesap sil
+  function deleteAccount() {
+    if(confirm('Hesabınızı silmek istediğinize emin misiniz?')){
+      if(currentUser){
+        users = users.filter(u => u !== currentUser);
+        alert('Hesap silindi.');
+        currentUser = null;
+        document.getElementById('register').style.display = 'block';
+        document.getElementById('login').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+        toggleSettings();
+      }
+    }
+  }
+
+  // Giriş yap (rastgele isim)
+  function login() {
+    const name = generateRandomName();
+    let user = users.find(u => u.name === name);
+    if(!user){
+      user = {
+        name,
+        password: '',
+        bio: "Hakkında bilgisi yok.",
+        followers: [],
+        following: [],
+        posts: [],
+        messages: []
+      };
+      users.push(user);
+    }
+    currentUser = user;
+    alert('Giriş yapıldı: ' + name);
+    document.getElementById('register').style.display = 'none';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+    loadFeed();
+  }
+
+  // Kayıt ol (rastgele isim)
+  function register() {
+    const name = generateRandomName();
+    if(users.some(u => u.name === name)){
+      alert('İsim zaten kullanılıyor, tekrar deneyin.');
+      return;
+    }
+    const newUser = {
+      name,
+      password: '',
+      bio: "Hakkında bilgisi yok.",
+      followers: [],
+      following: [],
+      posts: [],
+      messages: []
+    };
+    users.push(newUser);
+    alert('Kayıt başarılı! İsim: ' + name);
+  }
+
+  // Server değiştir
+  function changeServer() {
+    if(currentUser && !soanonyMode){
+      if(nameChangeCount >= 5){
+        alert('Günlük isim değiştirme hakkınız kalmadı.');
+        return;
+      }
+      currentServer = currentServer === 'Server1' ? 'Server2' : 'Server1';
+
+      if(currentUser.name.startsWith('anonim')){
+        const randNum = Math.floor(Math.random() * 9999) + 1;
+        currentUser.name = 'anonim' + String(randNum).padStart(4, '0');
+      } else if(currentUser.name === 'Soanony'){
+        alert("Soanony kullanıcılarının isimleri değiştirilemez.");
+        return;
+      }
+      if(!soanonyMode) {
+        nameChangeCount++;
+      }
+      alert('İsim değiştirildi: ' + currentUser.name);
+      loadFeed();
+    } else if(soanonyMode){
+      alert("Soanony modundayken isim veya server değiştirilemez.");
+    }
+  }
+
+  // Server değiştirme ve isim güncelleme (onaylı)
+  function confirmServerChange() {
+    const checkBox = document.getElementById('nameChangeCheck');
+    if(checkBox.checked && currentUser && !soanonyMode){
+      if(nameChangeCount >= 5){
+        alert('Günlük isim değiştirme hakkınız kalmadı.');
+        checkBox.checked = false;
+        return;
+      }
+      const oldName = currentUser.name;
+      const randNum = Math.floor(Math.random() * 9999) + 1;
+      currentUser.name = 'anonim' + String(randNum).padStart(4, '0');
+      nameChangeCount++;
+      alert(`İsim değiştirildi: ${oldName} → ${currentUser.name}`);
+    }
+    // İsim değişmiyorsa veya onaylanmadıysa değişiklik yapılmaz
+    document.getElementById('nameChangeCheck').checked = false;
+  }
+
+  // Server değiştirme
+  function switchServer(serverName) {
+    currentServer = serverName;
+    alert('Şu anki server: ' + serverName);
+  }
+
+  // Paylaşım
+  function addPost() {
+    const text = document.getElementById('newPostText').value.trim();
+    if(text && currentUser){
+      const post = {
+        author: currentUser.name,
+        content: text,
+        id: Date.now()
+      };
+      currentUser.posts.push(post);
+      loadFeed();
+      document.getElementById('newPostText').value = '';
+    }
+  }
+
+  // Feed yükleme
+  function loadFeed() {
+    const feedDiv = document.getElementById('feed');
+    feedDiv.innerHTML = '';
+    users.forEach(user => {
+      user.posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.innerHTML = `<strong style="cursor:pointer;" onclick="viewProfile('${user.name}')">${post.author}</strong>: ${post.content}`;
+        feedDiv.appendChild(postDiv);
+      });
+    });
+  }
+
+  // Profil göster
+  function viewProfile(name) {
+    const user = users.find(u => u.name === name);
+    if(user){
+      loadProfile(user);
+    }
+  }
+
+  // Profil yükleme ve güncelleme
+  function loadProfile(user) {
+    selectedProfile = user;
+    document.getElementById('profileName').innerText = user.name;
+    document.getElementById('profileBio').innerText = user.bio;
+    document.getElementById('followersCount').innerText = user.followers.length;
+    document.getElementById('followingCount').innerText = user.following.length;
+    updateFollowButtons();
+    document.getElementById('profile').style.display = 'block';
+  }
+
+  // Düzenle bio
+  function editBio() {
+    if(selectedProfile){
+      document.getElementById('profileBio').style.display = 'none';
+      document.getElementById('profileBioEdit').style.display = 'block';
+      document.getElementById('editBioBtn').style.display = 'none';
+      document.getElementById('saveBioBtn').style.display = 'inline';
+      document.getElementById('profileBioEdit').value = selectedProfile.bio;
+    }
+  }
+
+  // Kaydet bio
+  function saveBio() {
+    const newBio = document.getElementById('profileBioEdit').value.trim();
+    if(selectedProfile){
+      selectedProfile.bio = newBio;
+      document.getElementById('profileBio').innerText = newBio;
+      document.getElementById('profileBio').style.display = 'block';
+      document.getElementById('profileBioEdit').style.display = 'none';
+      document.getElementById('editBioBtn').style.display = 'inline';
+      document.getElementById('saveBioBtn').style.display = 'none';
+    }
+  }
+
+  // Profil kapat
+  function closeProfile() {
+    document.getElementById('profile').style.display = 'none';
+  }
+
+  // Mesaj kutusu
+  function showMessageBox() {
+    if(!selectedProfile){
+      alert("Lütfen önce bir profil seçin.");
+      return;
+    }
+    const messageDiv = document.getElementById('messages');
+    messageDiv.innerHTML = `
+      <h4>Mesaj Gönder: ${selectedProfile.name}</h4>
+      <textarea id="messageText" rows="3" cols="50"></textarea><br/>
+      <button onclick="sendMessage()">Gönder</button>
+    `;
+    messageDiv.style.display = 'block';
+  }
+
+  // Mesaj gönder
+  function sendMessage() {
+    const messageText = document.getElementById('messageText').value.trim();
+    if(messageText && selectedProfile){
+      selectedProfile.messages.push({from: currentUser.name, text: messageText});
+      alert('Mesaj gönderildi!');
+      document.getElementById('messages').style.display = 'none';
+    }
+  }
+
+  // TAKİP ETME ve ÇIKARMA FONKSİYONLARI
+  function followUser() {
+    if(selectedProfile && currentUser && selectedProfile !== currentUser){
+      if(!currentUser.following.includes(selectedProfile.name)){
+        currentUser.following.push(selectedProfile.name);
+        selectedProfile.followers.push(currentUser.name);
+        updateFollowButtons();
+        alert(`Artık ${selectedProfile.name} takip ediyorsunuz.`);
+        loadProfile(selectedProfile);
+      }
+    }
+  }
+
+  function unfollowUser() {
+    if(selectedProfile && currentUser && selectedProfile !== currentUser){
+      currentUser.following = currentUser.following.filter(name => name !== selectedProfile.name);
+      selectedProfile.followers = selectedProfile.followers.filter(name => name !== currentUser.name);
+      updateFollowButtons();
+      alert(`${selectedProfile.name} takibi bıraktınız.`);
+      loadProfile(selectedProfile);
+    }
+  }
+
+  function updateFollowButtons() {
+    if(selectedProfile && currentUser){
+      if(currentUser.following.includes(selectedProfile.name)){
+        document.getElementById('followBtn').style.display = 'none';
+        document.getElementById('unfollowBtn').style.display = 'inline';
+      } else {
+        document.getElementById('followBtn').style.display = 'inline';
+        document.getElementById('unfollowBtn').style.display = 'none';
+      }
+    }
+  }
+</script>
+</body>
+</html>
+<!-- Profil kısmına mesajlar ve mesaj kutusu yan yana -->
+<div id="profile">
+  <div id="profile-header" style="display:flex; justify-content:space-between; align-items:center;">
+    <h3>Profil: <span id="profileName"></span></h3>
+    <button onclick="closeProfile()">Kapat</button>
+  </div>
+  <p>Hakkında: <span id="profileBio"></span></p>
+  <textarea id="profileBioEdit" rows="3" cols="50" style="display:none;"></textarea>
+  <button id="editBioBtn" onclick="editBio()">Düzenle</button>
+  <button id="saveBioBtn" style="display:none;" onclick="saveBio()">Kaydet</button>
+  
+  <!-- Takip Et ve Çıkartma Butonları -->
+  <div id="followButtons" style="margin-top: 10px;">
+    <button id="followBtn" onclick="followUser()">Takip Et</button>
+    <button id="unfollowBtn" onclick="unfollowUser()" style="display:none;">Takipten Çık</button>
+  </div>
+  
+  <p>Takipçiler: <span id="followersCount"></span></p>
+  <p>Takip Ettikleri: <span id="followingCount"></span></p>
+  
+  <!-- Mesajlar ve Mesaj Gönderme Bölümü -->
+  <div style="display:flex; margin-top:20px;">
+    <!-- Mesaj Listesi -->
+    <div id="messageList" style="flex:1; border:1px solid #ccc; padding:10px; margin-right:10px; height:300px; overflow-y:auto;">
+      <h4>Mesajlar</h4>
+      <div id="messagesDisplay"></div>
+    </div>
+    <!-- Mesaj Yazma -->
+    <div style="flex:1; border:1px solid #ccc; padding:10px; height:300px; display:flex; flex-direction:column;">
+      <h4>Mesaj Gönder</h4>
+      <textarea id="messageText" rows="5" style="flex:1;"></textarea>
+      <button style="margin-top:10px;" onclick="sendMessage()">Gönder</button>
+    </div>
+  </div>
+</div>
+
